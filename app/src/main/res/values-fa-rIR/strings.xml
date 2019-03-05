@@ -16,4 +16,10 @@
 
     <string name="title_test">عنوان تست</string>
     <string name="sub_title_test">زیر عنوان تست</string>
+    <string name="accept">قبول</string>
+    <string name="cancel">لغو</string>
+    <string name="confirm">تایید</string>
+    <string name="permission_request">درخواست مجوز دسترسی</string>
+    <string name="location_permission_rationale">برای یافتن موقعیت شما، نیازمند دسترسی به موقعیت مکانی دستگاه شما می باشیم.</string>
+    <string name="please_wait">منتظر بمانید...</string>
 </resources>

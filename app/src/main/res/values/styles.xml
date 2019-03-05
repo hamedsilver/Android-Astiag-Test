@@ -63,14 +63,46 @@
         <item name="colorAccent">@color/md_indigo_800</item>
     </style>
 
+    <style name="AppTheme.White">
+        <item name="colorAccent">@color/md_white_1000</item>
+    </style>
+
     <style name="MyFabCustomStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">@dimen/fab_margin</item>
+        <item name="android:layout_margin">@dimen/fab_margin_2</item>
         <item name="borderWidth">0dp</item>
         <item name="elevation">6dp</item>
         <item name="pressedTranslationZ">12dp</item>
         <item name="rippleColor">@color/md_blue_grey_400</item>
+    </style>
+
+    <style name="MyTextStylePrimaryNano" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textSize">@dimen/text_size_Nano</item>
+        <item name="android:lineSpacingExtra">5dp</item>
+        <item name="android:textColorHint">@color/secondaryText</item>
+    </style>
+
+    <style name="MyTextStyleSecondaryNano" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/primaryTextWhite</item>
+        <item name="android:textSize">@dimen/text_size_Nano</item>
+        <item name="android:lineSpacingExtra">5dp</item>
+        <item name="android:textColorHint">@color/secondaryTextWhite</item>
+    </style>
+
+    <style name="MyTextStylePrimaryMicro" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textSize">@dimen/text_size_Micro</item>
+        <item name="android:lineSpacingExtra">5dp</item>
+        <item name="android:textColorHint">@color/secondaryText</item>
+    </style>
+
+    <style name="MyTextStyleSecondaryMicro" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/primaryTextWhite</item>
+        <item name="android:textSize">@dimen/text_size_Micro</item>
+        <item name="android:lineSpacingExtra">5dp</item>
+        <item name="android:textColorHint">@color/secondaryTextWhite</item>
     </style>
 
 </resources>

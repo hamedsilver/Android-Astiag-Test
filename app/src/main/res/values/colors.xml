@@ -9,4 +9,18 @@
 
     <color name = "colorSnackBarActionText">#FFEB3B</color>
     <color name="black_overlay">#66000000</color>
+
+    <color name="colorLightGray">#F5F5F5</color>
+
+    <color name="primaryText">#3B3B3B</color>
+    <color name="secondaryText">#606060</color>
+    <color name="primaryTextWhite">#F5F5F5</color>
+    <color name="secondaryTextWhite">#d1d1d1</color>
+
+    <color name="toast_success">#5cb85c</color>
+    <color name="toast_info">#337ab7</color>
+    <color name="toast_warning">#f0ad4e</color>
+    <color name="toast_error">#d9534f</color>
+    <color name="toast_default">#D4d6d7</color>
+
 </resources>

@@ -1,5 +1,6 @@
 package com.mkdev.astiagtestapp.views.ui.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.MenuItem
 import android.view.View
@@ -9,23 +10,34 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.android.material.navigation.NavigationView
+import com.mkdev.astiagtestapp.App
 import com.mkdev.astiagtestapp.R
+import com.mkdev.astiagtestapp.utils.NavigationEvent
 import com.mkdev.astiagtestapp.views.ui.base.BaseActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.processors.PublishProcessor
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import timber.log.Timber
+import javax.inject.Inject
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
     View.OnClickListener {
 
     private lateinit var navController: NavController
 
-    override fun initBeforeView() {
+    @Inject
+    lateinit var navEvents: PublishProcessor<NavigationEvent>
 
+    override fun initBeforeView() {
+        with(application as App) {
+            di.inject(this@MainActivity)
+        }
     }
 
     override fun getContentViewId(): Int = R.layout.activity_main
 
+    @SuppressLint("CheckResult")
     override fun initViews() {
         navController = findNavController(R.id.mainNav)
 
@@ -38,6 +50,22 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
 
         initNavDrawer()
+
+        navEvents
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Timber.d("Navigation Event: ${it.navEvent}")
+                when (it.navEvent) {
+                    NavigationEvent.NavEvent.OPEN_DRAWER -> {
+                        if (drawerLayout.isDrawerOpen(GravityCompat.START))
+                            drawerLayout.closeDrawer(GravityCompat.START)
+                        else
+                            drawerLayout.openDrawer(GravityCompat.START)
+                    }
+                }
+            }, {
+                Timber.d(it)
+            })
     }
 
     private fun initNavDrawer() {

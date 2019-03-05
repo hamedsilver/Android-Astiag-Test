@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello_blank_fragment">فرگمنت خالی</string>
+
+    <string name="nav_credit">اعتبار حساب</string>
+    <string name="nav_transaction">تراکنش ها</string>
+    <string name="nav_trips">سفرها</string>
+    <string name="nav_support">پشتیبانی</string>
+    <string name="nav_setting">تنظیمات</string>
+
+    <string name="main_fragment_title">صفحه اصلی</string>
+    <string name="blank_fragment_title">صفحه تست</string>
+
+    <string name="main_snack_bar">این یک پیام تست است</string>
+    <string name="main_snack_bar_action">خب</string>
+
+    <string name="title_test">عنوان تست</string>
+    <string name="sub_title_test">زیر عنوان تست</string>
+</resources>

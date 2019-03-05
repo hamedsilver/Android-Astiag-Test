@@ -14,7 +14,6 @@ import android.view.View
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -42,7 +41,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import kotlinx.android.synthetic.main.app_bar_main.view.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -105,6 +103,8 @@ class MainFragment : BaseFragment(), View.OnClickListener,
             .into(imgAvatar)
 
         fabNav.setOnClickListener(this)
+        fabBack.setOnClickListener(this)
+        fabCurrentLocation.setOnClickListener(this)
     }
 
     private fun requestLocationPermission() {
@@ -254,7 +254,7 @@ class MainFragment : BaseFragment(), View.OnClickListener,
             fabNav -> {
                 viewModel.openNavigation()
             }
-            fabMain -> {
+            fabBack -> {
                 Snackbar.make(view, getString(R.string.main_snack_bar), Snackbar.LENGTH_LONG)
                     .apply {
                         setAction(getString(R.string.main_snack_bar_action)) { this.dismiss() }

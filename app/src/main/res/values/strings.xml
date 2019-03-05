@@ -29,5 +29,7 @@
     <string name="location_permission_rationale">To be able to get current location we require access to your device\'s location capabilities</string>
 
     <string name="please_wait">Please wait…</string>
+    <string name="accept_source">Accept source</string>
+    <string name="accept_destination">Accept destination</string>
 
 </resources>

@@ -13,7 +13,7 @@
     <dimen name="text_size_Nano">12sp</dimen>
     <dimen name="text_size_Micro">14sp</dimen>
     <dimen name="text_size_Small">16sp</dimen>
-    <dimen name="text_size_Normal">18dp</dimen>
+    <dimen name="text_size_Normal">18sp</dimen>
     <dimen name="image_margin">8dp</dimen>
     <dimen name="image_size">40dp</dimen>
 

@@ -51,6 +51,8 @@ class MainFragment : BaseFragment(), View.OnClickListener,
     GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
     LocationServiceResult, OnMapReadyCallback {
 
+    private val TAG_FRAGMENT = "TAG_MAINFRAGMENT"
+
     private lateinit var viewModel: MainFragmentViewModel
 
     private val viewDestroyCompositeDisposable = CompositeDisposable()
@@ -77,10 +79,8 @@ class MainFragment : BaseFragment(), View.OnClickListener,
 
     override fun initBeforeView() {
         with(context!!.applicationContext as App) {
-            viewModel = ViewModelProviders.of(
-                this@MainFragment,
-                ViewModelFactory(this)
-            ).get(MainFragmentViewModel::class.java)
+            viewModel = ViewModelProviders.of(this@MainFragment, ViewModelFactory(this))
+                .get(MainFragmentViewModel::class.java)
         }
     }
 
@@ -97,6 +97,10 @@ class MainFragment : BaseFragment(), View.OnClickListener,
     }
 
     private fun setupUI() {
+        childFragmentManager.beginTransaction()
+            .replace(R.id.frameTripData, TripDataFragment.newInstance(), TAG_FRAGMENT)
+            .commit()
+
         GlideApp.with(context!!)
             .load(R.drawable.img_user)
             .rounded(dpToPx(25))
@@ -201,7 +205,7 @@ class MainFragment : BaseFragment(), View.OnClickListener,
     @SuppressLint("MissingPermission")
     private fun mapAction() {
         mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
-        mMap.isMyLocationEnabled = false //blue circle
+        mMap.isMyLocationEnabled = true //blue circle
 
         mMap.isTrafficEnabled = false
         mMap.isIndoorEnabled = false

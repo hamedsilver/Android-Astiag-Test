@@ -21,7 +21,10 @@
     <string name="confirm">تایید</string>
     <string name="permission_request">درخواست مجوز دسترسی</string>
     <string name="location_permission_rationale">برای یافتن موقعیت شما، نیازمند دسترسی به موقعیت مکانی دستگاه شما می باشیم.</string>
-    <string name="please_wait">منتظر بمانید...</string>
+    <string name="please_wait">منتظر بمانید…</string>
     <string name="accept_destination">تایید مقصد</string>
     <string name="accept_source">تایید مبدا</string>
+    <string name="server_error">خطای سروری رخ داده است!</string>
+    <string name="loading_address">بارگزاری آدرس…</string>
+    <string name="unknown_address">نامشخص</string>
 </resources>

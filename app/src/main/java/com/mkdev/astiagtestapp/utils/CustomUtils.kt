@@ -147,6 +147,14 @@ fun Toolbar.initToolbar(
     }
 }
 
+fun View.gone() {
+    this.visibility = View.GONE
+}
+
+fun View.visible() {
+    this.visibility = View.VISIBLE
+}
+
 enum class AppBarType {
     DRAWER, BACK, NONE
 }

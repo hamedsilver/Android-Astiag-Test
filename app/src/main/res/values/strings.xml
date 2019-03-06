@@ -32,4 +32,8 @@
     <string name="accept_source">Accept source</string>
     <string name="accept_destination">Accept destination</string>
 
+    <string name="server_error">Server error occurred!</string>
+    <string name="loading_address">Loading address..</string>
+    <string name="unknown_address">Unknown address</string>
+
 </resources>

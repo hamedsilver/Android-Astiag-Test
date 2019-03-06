@@ -40,6 +40,7 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.processors.PublishProcessor
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_main.*
 import timber.log.Timber
@@ -64,6 +65,11 @@ class MainFragment : BaseFragment(), View.OnClickListener,
     private lateinit var mMap: GoogleMap
     private var centerOfMap: LatLng? = null
     private var myLocation: LatLng? = null
+
+    companion object {
+        var mainActionsPublisher: PublishProcessor<Pair<ActionType, Any?>> =
+                PublishProcessor.create()
+    }
 
     override fun onConnected(@Nullable bundle: Bundle?) {
         Timber.d("Connected")
@@ -109,6 +115,14 @@ class MainFragment : BaseFragment(), View.OnClickListener,
         fabNav.setOnClickListener(this)
         fabBack.setOnClickListener(this)
         fabCurrentLocation.setOnClickListener(this)
+
+        mainActionsPublisher
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    when (it.first) {
+
+                    }
+                }.addTo(viewDestroyCompositeDisposable)
     }
 
     private fun requestLocationPermission() {
@@ -249,7 +263,7 @@ class MainFragment : BaseFragment(), View.OnClickListener,
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 centerOfMap = it
-                //getCurrentGeo()
+                TripDataFragment.tripDataActionsPublisher.onNext(Pair(ActionType.SHOW_SOURCE, centerOfMap))
             }.addTo(viewDestroyCompositeDisposable)
     }
 
@@ -285,6 +299,11 @@ class MainFragment : BaseFragment(), View.OnClickListener,
     override fun onDestroyView() {
         viewDestroyCompositeDisposable.clear()
         super.onDestroyView()
+    }
+
+    enum class ActionType {
+        SHOW_SOURCE,
+        SHOW_DESTINATION
     }
 }
 

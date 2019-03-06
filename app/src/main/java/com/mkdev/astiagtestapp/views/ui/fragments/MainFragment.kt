@@ -55,7 +55,8 @@ import java.util.concurrent.TimeUnit
 
 const val LOCATION_REQ_CODE = 4000
 
-class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, LocationServiceResult, OnMapReadyCallback {
+class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks, LocationServiceResult, OnMapReadyCallback {
 
     private val TAG_FRAGMENT = "TAG_MAIN_FRAGMENT"
 
@@ -81,7 +82,8 @@ class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnCon
 
     override fun initBeforeView() {
         with(context!!.applicationContext as App) {
-            viewModel = ViewModelProviders.of(this@MainFragment, ViewModelFactory(this)).get(MainFragmentViewModel::class.java)
+            viewModel = ViewModelProviders.of(this@MainFragment,
+                    ViewModelFactory(this)).get(MainFragmentViewModel::class.java)
         }
     }
 
@@ -148,10 +150,13 @@ class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnCon
     }
 
     private fun requestLocationPermission() {
-        (activity as MainActivity).requestPermission(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), object : PermissionCallback {
+        (activity as MainActivity).requestPermission(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION), object : PermissionCallback {
 
             override fun onGranted(permissions: Array<String>) {
-                if (permissions.contains(Manifest.permission.ACCESS_FINE_LOCATION) && permissions.contains(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                if (permissions.contains(Manifest.permission.ACCESS_FINE_LOCATION) &&
+                        permissions.contains(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
                     enableGPSAutomatically()
                 }
             }
@@ -161,7 +166,8 @@ class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnCon
             }
 
             override fun onShowRationale(permissions: Array<String>) {
-                if (permissions.contains(Manifest.permission.ACCESS_FINE_LOCATION) && permissions.contains(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                if (permissions.contains(Manifest.permission.ACCESS_FINE_LOCATION) &&
+                        permissions.contains(Manifest.permission.ACCESS_COARSE_LOCATION)) {
 
                     ConfirmDialog(context!!, getString(R.string.permission_request), getString(R.string.location_permission_rationale), {
                         requestLocationPermission()
@@ -174,7 +180,8 @@ class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnCon
     private fun enableGPSAutomatically() {
         var googleApiClient: GoogleApiClient? = null
         if (googleApiClient == null) {
-            googleApiClient = GoogleApiClient.Builder(context!!).addApi(LocationServices.API).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build()
+            googleApiClient = GoogleApiClient.Builder(context!!).addApi(LocationServices.API)
+                    .addConnectionCallbacks(this).addOnConnectionFailedListener(this).build()
             googleApiClient!!.connect()
             val locationRequest = LocationRequest.create()
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -199,7 +206,8 @@ class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnCon
                         }
 
                     }
-                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> CustomToast.makeText(context!!, "Setting change not allowed", CustomToast.WARNING)
+                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE ->
+                        CustomToast.makeText(context!!, "Setting change not allowed", CustomToast.WARNING)
                 }
             }
         }
@@ -236,8 +244,7 @@ class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnCon
         val location = locationManager?.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER)
         if (location != null) {
             updateLocation(location)
-        }
-        else {
+        } else {
             updateListener = object : LocationListener {
                 override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
                 }
@@ -299,7 +306,8 @@ class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnCon
     }
 
     private fun addMapMarker(loc: LatLng, origin: Drawable): Marker {
-        val marker = mMap.addMarker(MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromBitmap(convertToBitmap(origin, dpToPx(45), dpToPx(70)))))
+        val marker = mMap.addMarker(MarkerOptions().position(loc).icon(BitmapDescriptorFactory
+                .fromBitmap(convertToBitmap(origin, dpToPx(45), dpToPx(70)))))
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(loc.latitude - 0.0005, loc.longitude - 0.0005), 16f))
         return marker
     }

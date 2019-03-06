@@ -26,49 +26,20 @@ class CustomToast {
             val tv = TextView(context)
 
             when (type) {
-                SUCCESS -> setBackgroundAndTextColor(
-                    context,
-                    layout,
-                    R.color.toast_success,
-                    R.color.md_white_1000
-                )
-                ERROR -> setBackgroundAndTextColor(
-                    context,
-                    layout,
-                    R.color.toast_error,
-                    R.color.md_white_1000
-                )
-                INFO -> setBackgroundAndTextColor(
-                    context,
-                    layout,
-                    R.color.toast_info,
-                    R.color.md_white_1000
-                )
-                DEFAULT -> setBackgroundAndTextColor(
-                    context,
-                    layout,
-                    R.color.toast_default,
-                    R.color.md_black_1000
-                )
-                WARNING -> setBackgroundAndTextColor(
-                    context,
-                    layout,
-                    R.color.toast_warning,
-                    R.color.md_black_1000
-                )
+                SUCCESS -> setBackgroundAndTextColor(context, layout, R.color.toast_success, R.color.md_white_1000)
+                ERROR -> setBackgroundAndTextColor(context, layout, R.color.toast_error, R.color.md_white_1000)
+                INFO -> setBackgroundAndTextColor(context, layout, R.color.toast_info, R.color.md_white_1000)
+                DEFAULT -> setBackgroundAndTextColor(context, layout, R.color.toast_default, R.color.md_black_1000)
+                WARNING -> setBackgroundAndTextColor(context, layout, R.color.toast_warning, R.color.md_black_1000)
             }
 
-            layout.setPadding(
-                dpToPixel(context, 10), dpToPixel(context, 5), dpToPixel(context, 10),
-                dpToPixel(context, 5)
+            layout.setPadding(dpToPixel(context, 10), dpToPixel(context, 5), dpToPixel(context, 10),
+                    dpToPixel(context, 5)
             )
-            val params = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
             )
-            params.setMargins(
-                dpToPixel(context, 10), dpToPixel(context, 10), dpToPixel(context, 10),
-                dpToPixel(context, 10)
+            params.setMargins(dpToPixel(context, 10), dpToPixel(context, 10), dpToPixel(context, 10),
+                    dpToPixel(context, 10)
             )
             layout.layoutParams = params
 
@@ -85,7 +56,7 @@ class CustomToast {
             layout.addView(tv)
 
             val toast =
-                Toast(context) //context is object of Context write "this" if you are an Activity
+                    Toast(context) //context is object of Context write "this" if you are an Activity
             // Set The layout as Toast View
             toast.view = layout
             toast.duration = Toast.LENGTH_LONG
@@ -96,10 +67,10 @@ class CustomToast {
         }
 
         private fun setBackgroundAndTextColor(
-            context: Context,
-            layout: LinearLayout,
-            toast_color: Int,
-            text_color: Int
+                context: Context,
+                layout: LinearLayout,
+                toast_color: Int,
+                text_color: Int
         ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 layout.background = drawRoundRect(ContextCompat.getColor(context, toast_color))
@@ -118,10 +89,7 @@ class CustomToast {
         }
 
         private fun dpToPixel(context: Context, dp: Int): Int {
-            return TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(),
-                context.resources.displayMetrics
-            ).toInt()
+            return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics).toInt()
         }
     }
 

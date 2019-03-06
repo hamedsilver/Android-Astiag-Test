@@ -6,40 +6,72 @@ import com.google.gson.annotations.SerializedName
 
 data class LocationModel(
 
-        @field:SerializedName("osm_id") val osmId: String? = null,
+        @field:SerializedName("osm_id")
+        val osmId: String? = "",
 
-        @field:SerializedName("place_rank") val placeRank: String? = null,
+        @field:SerializedName("place_rank")
+        val placeRank: String? = "",
 
-        @field:SerializedName("licence") val licence: String? = null,
+        @field:SerializedName("licence")
+        val licence: String? = "",
 
-        @field:SerializedName("boundingbox") val boundingbox: List<String?>? = null,
+        @field:SerializedName("boundingbox")
+        val boundingbox: List<String?>? = null,
 
-        @field:SerializedName("address") val address: Address? = null,
+        @field:SerializedName("address")
+        val address: Address? = null,
 
-        @field:SerializedName("importance") val importance: String? = null,
+        @field:SerializedName("importance")
+        val importance: String? = "",
 
-        @field:SerializedName("lon") val lon: String? = null,
+        @field:SerializedName("lon")
+        val lon: String? = "",
 
-        @field:SerializedName("type") val type: String? = null,
+        @field:SerializedName("type")
+        val type: String? = "",
 
-        @field:SerializedName("display_name") val displayName: String? = null,
+        @field:SerializedName("display_name")
+        val displayName: String? = "",
 
-        @field:SerializedName("osm_type") val osmType: String? = null,
+        @field:SerializedName("osm_type")
+        val osmType: String? = "",
 
-        @field:SerializedName("name") val name: String? = null,
+        @field:SerializedName("name")
+        val name: String? = "",
 
-        @field:SerializedName("addresstype") val addresstype: String? = null,
+        @field:SerializedName("addresstype")
+        val addresstype: String? = "",
 
-        @field:SerializedName("category") val category: String? = null,
+        @field:SerializedName("category")
+        val category: String? = "",
 
-        @field:SerializedName("place_id") val placeId: String? = null,
+        @field:SerializedName("place_id")
+        val placeId: String? = "",
 
-        @field:SerializedName("lat") val lat: String? = null) : Parcelable {
+        @field:SerializedName("lat")
+        val lat: String? = "") : Parcelable {
+
     fun getMainAddress() = "${address?.neighbourhood} - ${address?.road}"
 
     fun getSubAddress() = "${address?.city} - ${address?.suburb}"
 
-    constructor(source: Parcel) : this(source.readString(), source.readString(), source.readString(), ArrayList<String?>().apply { source.readList(this, String::class.java.classLoader) }, source.readParcelable<Address>(Address::class.java.classLoader), source.readString(), source.readString(), source.readString(), source.readString(), source.readString(), source.readString(), source.readString(), source.readString(), source.readString(), source.readString())
+    constructor(source: Parcel) : this(source.readString(),
+            source.readString(),
+            source.readString(),
+            ArrayList<String?>().apply {
+                source.readList(this, String::class.java.classLoader)
+            },
+            source.readParcelable<Address>(Address::class.java.classLoader),
+            source.readString(),
+            source.readString(),
+            source.readString(),
+            source.readString(),
+            source.readString(),
+            source.readString(),
+            source.readString(),
+            source.readString(),
+            source.readString(),
+            source.readString())
 
     override fun describeContents() = 0
 

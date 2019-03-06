@@ -76,7 +76,8 @@ fun toggleSoftInput(context: Context) {
     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
 }
 
-fun Snackbar.customMake(@NonNull view: View, @NonNull text: CharSequence, actionText: CharSequence, duration: Int = Snackbar.LENGTH_LONG, listener: View.OnClickListener): Snackbar {
+fun Snackbar.customMake(@NonNull view: View, @NonNull text: CharSequence, actionText: CharSequence,
+                        duration: Int = Snackbar.LENGTH_LONG, listener: View.OnClickListener): Snackbar {
 
     Snackbar.make(view, text, duration).setAction(actionText) {
         listener.onClick(view)
@@ -89,9 +90,11 @@ fun Snackbar.customMake(@NonNull view: View, @NonNull text: CharSequence, action
 
 fun dpToPx(dp: Int) = (dp * Resources.getSystem().displayMetrics.density).toInt()
 
-fun GlideRequest<Drawable>.rounded(radius: Int, margin: Int = 3): GlideRequest<Drawable> = this.apply(RequestOptions().transform(RoundedCornersTransformation(radius, margin)))
+fun GlideRequest<Drawable>.rounded(radius: Int, margin: Int = 3): GlideRequest<Drawable> =
+        this.apply(RequestOptions().transform(RoundedCornersTransformation(radius, margin)))
 
-fun GlideRequest<Bitmap>.roundedBitmap(radius: Int, margin: Int = 3): GlideRequest<Bitmap> = this.apply(RequestOptions().transform(RoundedCornersTransformation(radius, margin)))
+fun GlideRequest<Bitmap>.roundedBitmap(radius: Int, margin: Int = 3): GlideRequest<Bitmap> =
+        this.apply(RequestOptions().transform(RoundedCornersTransformation(radius, margin)))
 
 
 fun Toolbar.initToolbar(activity: MainActivity, toolbarTitle: String, appBarType: AppBarType = AppBarType.NONE) {
@@ -105,7 +108,8 @@ fun Toolbar.initToolbar(activity: MainActivity, toolbarTitle: String, appBarType
 
         when (appBarType) {
             AppBarType.DRAWER -> {
-                val toggle = ActionBarDrawerToggle(activity, activity.drawerLayout, this@initToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+                val toggle = ActionBarDrawerToggle(activity, activity.drawerLayout,
+                        this@initToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
                 activity.drawerLayout.addDrawerListener(toggle)
                 toggle.syncState()
             }

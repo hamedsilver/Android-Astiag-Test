@@ -18,9 +18,7 @@ class BlankFragment : BaseFragment() {
 
     override fun initViews(rootView: View) {
         setHasOptionsMenu(true)
-        rootView.toolbarMain.initToolbar(
-            activity as MainActivity,
-            getString(R.string.blank_fragment_title), AppBarType.BACK
-        )
+        rootView.toolbarMain.initToolbar(activity as MainActivity,
+                getString(R.string.blank_fragment_title), AppBarType.BACK)
     }
 }

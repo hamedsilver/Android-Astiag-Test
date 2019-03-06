@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/consNavHeader"
+    style="@style/AppTheme.Clickable"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
     android:background="@drawable/side_nav_bar"
     android:gravity="bottom"
-    style="@style/AppTheme.Clickable"
     android:orientation="vertical"
     android:padding="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
@@ -20,18 +21,18 @@
         android:contentDescription="@string/app_name"
         android:src="@mipmap/ic_launcher_round"
         app:layout_constraintBottom_toTopOf="@+id/tvNavHeader"
-        app:layout_constraintStart_toStartOf="@+id/tvNavHeader" />
+        app:layout_constraintStart_toStartOf="@+id/tvNavHeader"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvNavHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
-        tools:text="@tools:sample/full_names"
-        android:text="@string/title_test"
+        android:layout_marginStart="8dp"
+        android:text="@string/app_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="@tools:sample/full_names"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

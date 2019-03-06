@@ -1,7 +1,6 @@
 package com.mkdev.astiagtestapp.views.ui.activities
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.view.MenuItem
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +20,8 @@ import kotlinx.android.synthetic.main.nav_header_main.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
+        View.OnClickListener {
 
     private lateinit var navController: NavController
 
@@ -42,8 +42,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             // LOCK NAVIGATION DRAWER IN ALL FRAGMENT ELSE MAIN_FRAGMENT
-            if (controller.currentDestination?.id in arrayListOf(R.id.mainFragment)) drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-            else drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            if (controller.currentDestination?.id in arrayListOf(R.id.mainFragment))
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            else
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         }
 
         initNavDrawer()
@@ -51,9 +53,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         navEvents.subscribeOn(AndroidSchedulers.mainThread()).subscribe({
             Timber.d("Navigation Event: ${it.navEvent}")
             when (it.navEvent) {
+                NavigationEvent.NavEvent.GO_BACK -> {
+                    navController.navigateUp()
+                }
+
                 NavigationEvent.NavEvent.OPEN_DRAWER -> {
-                    if (drawerLayout.isDrawerOpen(GravityCompat.START)) drawerLayout.closeDrawer(GravityCompat.START)
-                    else drawerLayout.openDrawer(GravityCompat.START)
+                    if (drawerLayout.isDrawerOpen(GravityCompat.START))
+                        drawerLayout.closeDrawer(GravityCompat.START)
+                    else
+                        drawerLayout.openDrawer(GravityCompat.START)
                 }
             }
         }, {
@@ -71,14 +79,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        val intent = Intent()
         when (item.itemId) {
-            R.id.nav_credit -> {
+            R.id.nav_credit, R.id.nav_transactions,
+            R.id.nav_trips, R.id.nav_support, R.id.nav_setting -> {
                 navController.navigate(R.id.action_mainFragment_to_blankFragment)
             }
-            R.id.nav_transactions -> {
-                /*intent.setClass(this, RecyclerViewActivity::class.java!!)
-                startActivity(intent)*/
+            R.id.nav_exit -> {
+                android.os.Process.killProcess(android.os.Process.myPid())
+                System.exit(1)
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -99,7 +107,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onClick(v: View) {
         when (v) {
             consNavHeader -> {
-                Timber.d("")
+                Timber.d("Test")
             }
         }
     }

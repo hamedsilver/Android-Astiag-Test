@@ -6,24 +6,42 @@ import com.google.gson.annotations.SerializedName
 
 data class Address(
 
-        @field:SerializedName("country") val country: String? = null,
+        @field:SerializedName("country")
+        val country: String? = "",
 
-        @field:SerializedName("country_code") val countryCode: String? = null,
+        @field:SerializedName("country_code")
+        val countryCode: String? = "",
 
-        @field:SerializedName("road") val road: String? = null,
+        @field:SerializedName("road")
+        val road: String? = "",
 
-        @field:SerializedName("city") val city: String? = null,
+        @field:SerializedName("city")
+        val city: String? = "",
 
-        @field:SerializedName("neighbourhood") val neighbourhood: String? = null,
+        @field:SerializedName("neighbourhood")
+        val neighbourhood: String? = "",
 
-        @field:SerializedName("county") val county: String? = null,
+        @field:SerializedName("county")
+        val county: String? = "",
 
-        @field:SerializedName("postcode") val postcode: String? = null,
+        @field:SerializedName("postcode")
+        val postcode: String? = "",
 
-        @field:SerializedName("suburb") val suburb: String? = null,
+        @field:SerializedName("suburb")
+        val suburb: String? = "",
 
-        @field:SerializedName("state") val state: String? = null) : Parcelable {
-    constructor(source: Parcel) : this(source.readString(), source.readString(), source.readString(), source.readString(), source.readString(), source.readString(), source.readString(), source.readString(), source.readString())
+        @field:SerializedName("state")
+        val state: String? = "") : Parcelable {
+
+    constructor(source: Parcel) : this(source.readString(),
+            source.readString(),
+            source.readString(),
+            source.readString(),
+            source.readString(),
+            source.readString(),
+            source.readString(),
+            source.readString(),
+            source.readString())
 
     override fun describeContents() = 0
 

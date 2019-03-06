@@ -13,8 +13,7 @@ abstract class BaseFragment : Fragment() {
         initBeforeView()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? =
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(getContentViewId(), container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

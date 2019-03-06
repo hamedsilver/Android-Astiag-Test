@@ -51,11 +51,8 @@ abstract class BaseActivity : AppCompatActivity() {
         ActivityCompat.requestPermissions(this, permissions, permissionRequestCode)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+                                            grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == permissionRequestCode) {
@@ -77,14 +74,11 @@ abstract class BaseActivity : AppCompatActivity() {
                 }
             }
 
-            if (granted.isNotEmpty())
-                permissionCallback.onGranted(granted)
+            if (granted.isNotEmpty()) permissionCallback.onGranted(granted)
 
-            if (rationale.isNotEmpty())
-                permissionCallback.onShowRationale(rationale)
+            if (rationale.isNotEmpty()) permissionCallback.onShowRationale(rationale)
 
-            if (denied.isNotEmpty())
-                permissionCallback.onDenied(denied)
+            if (denied.isNotEmpty()) permissionCallback.onDenied(denied)
         }
     }
 }

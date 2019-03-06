@@ -50,7 +50,8 @@ class TripDataDestFragment : BaseFragment(), View.OnClickListener {
 
     override fun initBeforeView() {
         with(context!!.applicationContext as App) {
-            viewModel = ViewModelProviders.of(this@TripDataDestFragment, ViewModelFactory(this)).get(TripDataFragmentViewModel::class.java)
+            viewModel = ViewModelProviders.of(this@TripDataDestFragment,
+                    ViewModelFactory(this)).get(TripDataFragmentViewModel::class.java)
         }
 
         arguments?.let {

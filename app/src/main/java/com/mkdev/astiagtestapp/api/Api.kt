@@ -9,5 +9,6 @@ interface Api {
 
     @GET("reverse")
     fun getCurrentLocationData(@Query("format") format: String,
-                               @Query("lat") lat: Double, @Query("lon") lon: Double): Single<LocationModel>
+                               @Query("lat") lat: Double,
+                               @Query("lon") lon: Double): Single<LocationModel>
 }

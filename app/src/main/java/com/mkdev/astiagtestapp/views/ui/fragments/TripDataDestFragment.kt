@@ -7,10 +7,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.mkdev.astiagtestapp.App
 import com.mkdev.astiagtestapp.R
 import com.mkdev.astiagtestapp.models.LocationModel
-import com.mkdev.astiagtestapp.utils.CustomToast
-import com.mkdev.astiagtestapp.utils.gone
-import com.mkdev.astiagtestapp.utils.iomain
-import com.mkdev.astiagtestapp.utils.visible
+import com.mkdev.astiagtestapp.utils.*
 import com.mkdev.astiagtestapp.viewModels.TripDataFragmentViewModel
 import com.mkdev.astiagtestapp.viewModels.ViewModelFactory
 import com.mkdev.astiagtestapp.views.ui.base.BaseFragment
@@ -20,7 +17,6 @@ import io.reactivex.processors.PublishProcessor
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_trip_data_dest.*
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 
 private const val ARG_PARAM1 = "param1"
 
@@ -67,33 +63,36 @@ class TripDataDestFragment : BaseFragment(), View.OnClickListener {
     override fun initViews(rootView: View) {
 
         tvAccept.setOnClickListener(this)
+        tvAccept.changeState(ViewType.DISABLE, R.drawable.rectangle_shape_fill_dark)
 
         tvOriginTitle.text = sourceAddress.getMainAddress()
         tvOriginSubTitle.text = sourceAddress.getSubAddress()
 
         tripDataActionsPublisher.observeOn(AndroidSchedulers.mainThread()).subscribe {
-                    when (it.first) {
-                        MainFragment.ActionType.SHOW_LOCATION_DATA -> {
-                            getCurrentLocationData(it.second as LatLng)
-                        }
-                    }
-                }.addTo(viewDestroyCompositeDisposable)
+            when (it.first) {
+                MainFragment.ActionType.SHOW_LOCATION_DATA -> {
+                    getCurrentLocationData(it.second as LatLng)
+                }
+            }
+        }.addTo(viewDestroyCompositeDisposable)
     }
 
     private fun getCurrentLocationData(loc: LatLng) {
-        viewModel.getCurrentLocationData(loc).delay(500, TimeUnit.MILLISECONDS).iomain().doOnSubscribe {
-                    tvDestinationTitle.text = getString(R.string.loading_address)
-                    tvDestinationSubTitle.gone()
-                }.doAfterTerminate {
-                    tvDestinationSubTitle.visible()
-                }.subscribe({
-                    currentAddress = it
-                    tvDestinationTitle.text = it?.getMainAddress()
-                    tvDestinationSubTitle.text = it?.getSubAddress()
-                }, {
-                    Timber.e(it)
-                    CustomToast.makeText(context!!, getString(R.string.server_error), CustomToast.ERROR)
-                }).addTo(viewDestroyCompositeDisposable)
+        viewModel.getCurrentLocationData(loc).iomain().doOnSubscribe {
+            tvAccept.changeState(ViewType.DISABLE, R.drawable.rectangle_shape_fill_dark)
+            tvDestinationTitle.text = getString(R.string.loading_address)
+            tvDestinationSubTitle.gone()
+        }.doAfterTerminate {
+            tvAccept.changeState(ViewType.ENABLE, R.drawable.rectangle_shape_fill_orange)
+            tvDestinationSubTitle.visible()
+        }.subscribe({
+            currentAddress = it
+            tvDestinationTitle.text = it?.getMainAddress()
+            tvDestinationSubTitle.text = it?.getSubAddress()
+        }, {
+            Timber.e(it)
+            CustomToast.makeText(context!!, getString(R.string.server_error), CustomToast.ERROR)
+        }).addTo(viewDestroyCompositeDisposable)
     }
 
     override fun onDestroy() {

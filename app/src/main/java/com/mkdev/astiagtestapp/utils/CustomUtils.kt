@@ -14,13 +14,12 @@ import android.text.style.AbsoluteSizeSpan
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import androidx.annotation.NonNull
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import com.mkdev.astiagtestapp.R
@@ -42,8 +41,7 @@ fun isNetworkConnected(context: Context): Boolean {
 }
 
 @SuppressLint("HardwareIds")
-fun getDeviceId(context: Context): String =
-    Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+fun getDeviceId(context: Context): String = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
 
 fun usernameValidator(string: String) = Pattern.compile("^[a-z0-9_-]{4,15}$").matcher(string).matches()
 
@@ -78,13 +76,7 @@ fun toggleSoftInput(context: Context) {
     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
 }
 
-fun Snackbar.customMake(
-    @NonNull view: View,
-    @NonNull text: CharSequence,
-    actionText: CharSequence,
-    duration: Int = Snackbar.LENGTH_LONG,
-    listener: View.OnClickListener
-): Snackbar {
+fun Snackbar.customMake(@NonNull view: View, @NonNull text: CharSequence, actionText: CharSequence, duration: Int = Snackbar.LENGTH_LONG, listener: View.OnClickListener): Snackbar {
 
     Snackbar.make(view, text, duration).setAction(actionText) {
         listener.onClick(view)
@@ -97,37 +89,23 @@ fun Snackbar.customMake(
 
 fun dpToPx(dp: Int) = (dp * Resources.getSystem().displayMetrics.density).toInt()
 
-fun GlideRequest<Drawable>.rounded(radius: Int, margin: Int = 3): GlideRequest<Drawable> =
-    this.apply(RequestOptions().transform(RoundedCornersTransformation(radius, margin)))
+fun GlideRequest<Drawable>.rounded(radius: Int, margin: Int = 3): GlideRequest<Drawable> = this.apply(RequestOptions().transform(RoundedCornersTransformation(radius, margin)))
 
-fun GlideRequest<Bitmap>.roundedBitmap(radius: Int, margin: Int = 3): GlideRequest<Bitmap> =
-    this.apply(RequestOptions().transform(RoundedCornersTransformation(radius, margin)))
+fun GlideRequest<Bitmap>.roundedBitmap(radius: Int, margin: Int = 3): GlideRequest<Bitmap> = this.apply(RequestOptions().transform(RoundedCornersTransformation(radius, margin)))
 
 
-fun Toolbar.initToolbar(
-    activity: MainActivity, toolbarTitle: String,
-    appBarType: AppBarType = AppBarType.NONE
-) {
+fun Toolbar.initToolbar(activity: MainActivity, toolbarTitle: String, appBarType: AppBarType = AppBarType.NONE) {
 
     activity.setSupportActionBar(this)
     activity.supportActionBar?.apply {
         title = SpannableString(toolbarTitle).apply {
-            setSpan(
-                AbsoluteSizeSpan(dpToPx(16)),
-                0,
-                toolbarTitle.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            ) // set size
+            setSpan(AbsoluteSizeSpan(dpToPx(16)), 0, toolbarTitle.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // set size
             //setSpan(ForegroundColorSpan(Color.RED), 0, toolbarTitle.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // set color
         }
 
         when (appBarType) {
             AppBarType.DRAWER -> {
-                val toggle = ActionBarDrawerToggle(
-                    activity, activity.drawerLayout,
-                    this@initToolbar,
-                    R.string.navigation_drawer_open, R.string.navigation_drawer_close
-                )
+                val toggle = ActionBarDrawerToggle(activity, activity.drawerLayout, this@initToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
                 activity.drawerLayout.addDrawerListener(toggle)
                 toggle.syncState()
             }
@@ -147,6 +125,19 @@ fun Toolbar.initToolbar(
     }
 }
 
+fun View.changeState(type: ViewType, @DrawableRes resId: Int) {
+    when (type) {
+        ViewType.ENABLE -> {
+            isClickable = true
+            setBackgroundResource(resId)
+        }
+        ViewType.DISABLE -> {
+            isClickable = false
+            setBackgroundResource(resId)
+        }
+    }
+}
+
 fun View.gone() {
     this.visibility = View.GONE
 }
@@ -157,4 +148,8 @@ fun View.visible() {
 
 enum class AppBarType {
     DRAWER, BACK, NONE
+}
+
+enum class ViewType {
+    ENABLE, DISABLE
 }

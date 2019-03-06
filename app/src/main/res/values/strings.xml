@@ -16,6 +16,7 @@
     <string name="main_snack_bar_action">OK</string>
 
     <string name="nav_setting">Setting</string>
+    <string name="nav_exit">Exit</string>
     <string name="nav_transaction">Transaction</string>
     <string name="nav_trips">Trips</string>
     <string name="nav_support">Support</string>

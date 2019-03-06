@@ -21,8 +21,7 @@ import kotlinx.android.synthetic.main.nav_header_main.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
-    View.OnClickListener {
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private lateinit var navController: NavController
 
@@ -43,29 +42,23 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             // LOCK NAVIGATION DRAWER IN ALL FRAGMENT ELSE MAIN_FRAGMENT
-            if (controller.currentDestination?.id in arrayListOf(R.id.mainFragment))
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-            else
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            if (controller.currentDestination?.id in arrayListOf(R.id.mainFragment)) drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            else drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         }
 
         initNavDrawer()
 
-        navEvents
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Timber.d("Navigation Event: ${it.navEvent}")
-                when (it.navEvent) {
-                    NavigationEvent.NavEvent.OPEN_DRAWER -> {
-                        if (drawerLayout.isDrawerOpen(GravityCompat.START))
-                            drawerLayout.closeDrawer(GravityCompat.START)
-                        else
-                            drawerLayout.openDrawer(GravityCompat.START)
-                    }
+        navEvents.subscribeOn(AndroidSchedulers.mainThread()).subscribe({
+            Timber.d("Navigation Event: ${it.navEvent}")
+            when (it.navEvent) {
+                NavigationEvent.NavEvent.OPEN_DRAWER -> {
+                    if (drawerLayout.isDrawerOpen(GravityCompat.START)) drawerLayout.closeDrawer(GravityCompat.START)
+                    else drawerLayout.openDrawer(GravityCompat.START)
                 }
-            }, {
-                Timber.d(it)
-            })
+            }
+        }, {
+            Timber.d(it)
+        })
     }
 
     private fun initNavDrawer() {
@@ -90,6 +83,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    override fun onBackPressed() {
+        when {
+            drawerLayout.isDrawerOpen(GravityCompat.START) -> {
+                drawerLayout.closeDrawer(GravityCompat.START)
+            }
+            navController.currentDestination?.id != R.id.mainFragment -> {
+                navController.navigateUp()
+            }
+        }
     }
 
     override fun onClick(v: View) {

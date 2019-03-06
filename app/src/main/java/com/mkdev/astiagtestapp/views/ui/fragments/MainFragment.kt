@@ -43,11 +43,10 @@ import com.mkdev.astiagtestapp.views.ui.activities.MainActivity
 import com.mkdev.astiagtestapp.views.ui.base.BaseFragment
 import com.mkdev.astiagtestapp.views.ui.dialogs.ConfirmDialog
 import io.reactivex.BackpressureStrategy
+import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 import io.reactivex.processors.PublishProcessor
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -89,10 +88,10 @@ class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnCon
     override fun getContentViewId(): Int = R.layout.fragment_main
 
     override fun initViews(rootView: View) {
-        Single.just(true).delay(500, TimeUnit.MILLISECONDS).iomain().subscribe(Consumer {
+        Completable.timer(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).subscribe({
             requestLocationPermission()
             setupUI()
-        }).addTo(viewDestroyCompositeDisposable)
+        }, {}).addTo(viewDestroyCompositeDisposable)
     }
 
     override fun onClick(view: View) {
@@ -267,7 +266,7 @@ class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnCon
             mMap.setOnCameraIdleListener {
                 it.onNext(mMap.cameraPosition.target)
             }
-        }, BackpressureStrategy.DROP).debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe {
+        }, BackpressureStrategy.DROP).debounce(500, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe {
             centerOfMap = it
             if (sourceMarker == null) TripDataSourceFragment.tripDataActionsPublisher.onNext(Pair(ActionType.SHOW_LOCATION_DATA, it))
             else if (destMarker == null) TripDataDestFragment.tripDataActionsPublisher.onNext(Pair(ActionType.SHOW_LOCATION_DATA, it))

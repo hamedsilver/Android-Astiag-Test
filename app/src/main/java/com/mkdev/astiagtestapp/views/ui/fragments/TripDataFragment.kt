@@ -78,7 +78,7 @@ class TripDataFragment : BaseFragment(), View.OnClickListener {
 
     private fun getCurrentLocationData() {
         viewModel.getCurrentLocationData(centerOfMap!!)
-                .delay(1, TimeUnit.SECONDS)
+                .delay(500, TimeUnit.MILLISECONDS)
                 .iomain()
                 .doOnSubscribe {
                     tvOriginTitle.text = getString(R.string.loading_address)

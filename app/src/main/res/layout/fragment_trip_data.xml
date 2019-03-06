@@ -39,6 +39,7 @@
         android:maxLines="1"
         android:paddingBottom="8dp"
         android:paddingTop="8dp"
+        android:text="@string/loading_address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/viewDotBlack"
         app:layout_constraintTop_toTopOf="parent"

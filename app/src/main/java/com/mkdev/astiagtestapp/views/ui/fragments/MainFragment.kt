@@ -103,12 +103,15 @@ class MainFragment : BaseFragment(), View.OnClickListener,
                 .iomain()
                 .subscribe({
                     requestLocationPermission()
+                    setupUI()
                 }, {}).addTo(viewDestroyCompositeDisposable)
-
-        setupUI()
     }
 
     private fun setupUI() {
+        fabNav.setOnClickListener(this)
+        fabBack.setOnClickListener(this)
+        fabCurrentLocation.setOnClickListener(this)
+
         childFragmentManager.beginTransaction()
                 .replace(R.id.frameTripData, TripDataFragment.newInstance(), TAG_FRAGMENT)
                 .commit()
@@ -117,10 +120,6 @@ class MainFragment : BaseFragment(), View.OnClickListener,
                 .load(R.drawable.img_user)
                 .rounded(dpToPx(25))
                 .into(imgAvatar)
-
-        fabNav.setOnClickListener(this)
-        fabBack.setOnClickListener(this)
-        fabCurrentLocation.setOnClickListener(this)
 
         mainActionsPublisher
                 .observeOn(AndroidSchedulers.mainThread())

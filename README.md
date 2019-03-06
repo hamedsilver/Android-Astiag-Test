@@ -1,7 +1,7 @@
 # Astiag test application
-this repository is a test application for Astiag company.
-This app will show source and destination location and add marker over map. You can back in location. You can show address of places.
-this app create with 1 activity and 2 fragment such as : MainFragment, SplasFragment and 2 embed fragment for show location detail.
+This repository is a test application for Astiag company.
+This app a Taxi service that will show source and destination location and add marker over map. You can back in location. You can show address of places.
+This app create with 1 activity and 2 fragment such as : MainFragment, SplasFragment and 2 embed fragment for show location detail.
 
 I have written this project with Kotin and MVVM architecture.
 

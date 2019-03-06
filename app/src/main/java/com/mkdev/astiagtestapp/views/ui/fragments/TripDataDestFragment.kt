@@ -39,7 +39,8 @@ class TripDataDestFragment : BaseFragment(), View.OnClickListener {
     private lateinit var currentAddress: LocationModel
 
     companion object {
-        var tripDataActionsPublisher: PublishProcessor<Pair<MainFragment.ActionType, Any?>> = PublishProcessor.create()
+        var tripDataActionsPublisher: PublishProcessor<Pair<MainFragment.ActionType, Any?>> =
+                PublishProcessor.create()
 
         fun newInstance(address: LocationModel) = TripDataDestFragment().apply {
             arguments = Bundle().apply {
@@ -69,31 +70,34 @@ class TripDataDestFragment : BaseFragment(), View.OnClickListener {
         tvOriginTitle.text = sourceAddress.getMainAddress()
         tvOriginSubTitle.text = sourceAddress.getSubAddress()
 
-        tripDataActionsPublisher.observeOn(AndroidSchedulers.mainThread()).subscribe {
-            when (it.first) {
-                MainFragment.ActionType.SHOW_LOCATION_DATA -> {
-                    getCurrentLocationData(it.second as LatLng)
-                }
-            }
-        }.addTo(viewDestroyCompositeDisposable)
+        tripDataActionsPublisher.observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    when (it.first) {
+                        MainFragment.ActionType.SHOW_LOCATION_DATA -> {
+                            getCurrentLocationData(it.second as LatLng)
+                        }
+                    }
+                }.addTo(viewDestroyCompositeDisposable)
     }
 
     private fun getCurrentLocationData(loc: LatLng) {
-        viewModel.getCurrentLocationData(loc).iomain().doOnSubscribe {
-            tvAccept.changeState(ViewType.DISABLE, R.drawable.rectangle_shape_fill_dark)
-            tvDestinationTitle.text = getString(R.string.loading_address)
-            tvDestinationSubTitle.gone()
-        }.doAfterTerminate {
-            tvAccept.changeState(ViewType.ENABLE, R.drawable.rectangle_shape_fill_orange)
-            tvDestinationSubTitle.visible()
-        }.subscribe({
-            currentAddress = it
-            tvDestinationTitle.text = it?.getMainAddress()
-            tvDestinationSubTitle.text = it?.getSubAddress()
-        }, {
-            Timber.e(it)
-            CustomToast.makeText(context!!, getString(R.string.server_error), CustomToast.ERROR)
-        }).addTo(viewDestroyCompositeDisposable)
+        viewModel.getCurrentLocationData(loc)
+                .iomain()
+                .doOnSubscribe {
+                    tvAccept.changeState(ViewType.DISABLE, R.drawable.rectangle_shape_fill_dark)
+                    tvDestinationTitle.text = getString(R.string.loading_address)
+                    tvDestinationSubTitle.gone()
+                }.subscribe({
+                    currentAddress = it
+                    tvDestinationTitle.text = it?.getMainAddress()
+                    tvDestinationSubTitle.text = it?.getSubAddress()
+
+                    tvAccept.changeState(ViewType.ENABLE, R.drawable.rectangle_shape_fill_orange)
+                    tvDestinationSubTitle.visible()
+                }, {
+                    Timber.e(it)
+                    CustomToast.makeText(context!!, getString(R.string.server_error), CustomToast.ERROR)
+                }).addTo(viewDestroyCompositeDisposable)
     }
 
     override fun onDestroy() {

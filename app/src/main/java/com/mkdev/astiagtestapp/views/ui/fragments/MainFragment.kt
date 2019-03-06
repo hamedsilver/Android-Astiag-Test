@@ -90,10 +90,11 @@ class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnCon
     override fun getContentViewId(): Int = R.layout.fragment_main
 
     override fun initViews(rootView: View) {
-        Completable.timer(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).subscribe({
-            requestLocationPermission()
-            setupUI()
-        }, {}).addTo(viewDestroyCompositeDisposable)
+        Completable.timer(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .subscribe({
+                    requestLocationPermission()
+                    setupUI()
+                }, {}).addTo(viewDestroyCompositeDisposable)
     }
 
     override fun onClick(view: View) {
@@ -120,25 +121,26 @@ class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnCon
 
         GlideApp.with(context!!).load(R.drawable.img_user).rounded(dpToPx(25)).into(imgAvatar)
 
-        mainActionsPublisher.observeOn(AndroidSchedulers.mainThread()).subscribe {
-            when (it.first) {
-                ActionType.ACCEPT_SOURCE -> {
-                    destFragment = TripDataDestFragment.newInstance(it.second as LocationModel)
-                    removeFragment(sourceFragment)
-                    addFragment(destFragment)
+        mainActionsPublisher.observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    when (it.first) {
+                        ActionType.ACCEPT_SOURCE -> {
+                            destFragment = TripDataDestFragment.newInstance(it.second as LocationModel)
+                            removeFragment(sourceFragment)
+                            addFragment(destFragment)
 
-                    sourceMarker = addMapMarker(centerOfMap!!, ContextCompat.getDrawable(context!!, R.drawable.img_origin)!!)
-                    imgMarker.setImageResource(R.drawable.img_dest)
+                            sourceMarker = addMapMarker(centerOfMap!!, ContextCompat.getDrawable(context!!, R.drawable.img_origin)!!)
+                            imgMarker.setImageResource(R.drawable.img_dest)
 
-                    fabBack.visible()
-                }
+                            fabBack.visible()
+                        }
 
-                ActionType.ACCEPT_DESTINATION -> {
-                    destMarker = addMapMarker(centerOfMap!!, ContextCompat.getDrawable(context!!, R.drawable.img_dest)!!)
-                    imgMarker.gone()
-                }
-            }
-        }.addTo(viewDestroyCompositeDisposable)
+                        ActionType.ACCEPT_DESTINATION -> {
+                            destMarker = addMapMarker(centerOfMap!!, ContextCompat.getDrawable(context!!, R.drawable.img_dest)!!)
+                            imgMarker.gone()
+                        }
+                    }
+                }.addTo(viewDestroyCompositeDisposable)
     }
 
     private fun convertToBitmap(drawable: Drawable, widthPixels: Int, heightPixels: Int): Bitmap {
@@ -273,11 +275,14 @@ class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnCon
             mMap.setOnCameraIdleListener {
                 it.onNext(mMap.cameraPosition.target)
             }
-        }, BackpressureStrategy.DROP).debounce(500, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe {
-            centerOfMap = it
-            if (sourceMarker == null) TripDataSourceFragment.tripDataActionsPublisher.onNext(Pair(ActionType.SHOW_LOCATION_DATA, it))
-            else if (destMarker == null) TripDataDestFragment.tripDataActionsPublisher.onNext(Pair(ActionType.SHOW_LOCATION_DATA, it))
-        }.addTo(viewDestroyCompositeDisposable)
+        }, BackpressureStrategy.DROP)
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    centerOfMap = it
+                    if (sourceMarker == null) TripDataSourceFragment.tripDataActionsPublisher.onNext(Pair(ActionType.SHOW_LOCATION_DATA, it))
+                    else if (destMarker == null) TripDataDestFragment.tripDataActionsPublisher.onNext(Pair(ActionType.SHOW_LOCATION_DATA, it))
+                }.addTo(viewDestroyCompositeDisposable)
     }
 
     private fun backLocation() {

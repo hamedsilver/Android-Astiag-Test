@@ -21,9 +21,10 @@ class SplashFragment : BaseFragment() {
     override fun getContentViewId(): Int = R.layout.fragment_splash
 
     override fun initViews(rootView: View) {
-        Completable.timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).subscribe({
-            Navigation.findNavController(view!!).navigate(R.id.action_splashFragment_to_mainFragment)
-        }, {}).addTo(destroyCompositeDisposable)
+        Completable.timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+                .subscribe({
+                    Navigation.findNavController(view!!).navigate(R.id.action_splashFragment_to_mainFragment)
+                }, {}).addTo(destroyCompositeDisposable)
     }
 
     override fun onDestroyView() {

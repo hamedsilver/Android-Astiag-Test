@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                   xmlns:tools="http://schemas.android.com/tools"
-                                                   android:layout_width="match_parent"
-                                                   android:layout_height="wrap_content"
-                                                   android:padding="8dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
 
     <View
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tvDestinationSubTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvOriginTitle"/>
+        app:layout_constraintTop_toTopOf="@+id/tvOriginTitle" />
 
     <View
         android:id="@+id/viewDotBlack"
@@ -25,61 +25,58 @@
         android:background="@drawable/circle_shape_fill_blue"
         app:layout_constraintBottom_toBottomOf="@+id/tvOriginSubTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvOriginTitle"/>
+        app:layout_constraintTop_toTopOf="@+id/tvOriginTitle" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvOriginTitle"
         style="@style/MyTextStylePrimaryMicro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:gravity="start|center_vertical"
         android:maxLines="1"
-        android:paddingBottom="8dp"
         android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:text="@string/loading_address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/viewDotBlack"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@tools:sample/lorem/random"/>
+        tools:text="@tools:sample/lorem/random" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvOriginSubTitle"
         style="@style/MyTextStylePrimaryMicro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:gravity="start|center_vertical"
         android:maxLines="1"
         android:paddingBottom="8dp"
         android:textColor="@color/md_grey_500"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/viewDotBlack"
         app:layout_constraintTop_toBottomOf="@+id/tvOriginTitle"
-        tools:text="@tools:sample/lorem/random"
-        tools:visibility="visible"/>
+        tools:text="@tools:sample/lorem/random" />
 
     <Space
         android:id="@+id/space"
-        android:layout_width="48dp"
+        android:layout_width="38dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvOriginSubTitle"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvOriginSubTitle" />
 
     <View
         android:id="@+id/view"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginStart="8dp"
         android:background="@color/divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/space"
-        app:layout_constraintTop_toBottomOf="@+id/tvOriginSubTitle"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvOriginSubTitle" />
 
     <View
         android:id="@+id/viewDotOrange"
@@ -89,32 +86,33 @@
         android:background="@drawable/circle_shape_fill_orange"
         app:layout_constraintBottom_toBottomOf="@+id/tvDestinationSubTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvDestinationTitle"/>
+        app:layout_constraintTop_toTopOf="@+id/tvDestinationTitle" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvDestinationTitle"
         style="@style/MyTextStylePrimaryMicro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:gravity="start|center_vertical"
         android:maxLines="1"
-        android:paddingBottom="8dp"
         android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="@string/loading_address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/viewDotOrange"
         app:layout_constraintTop_toTopOf="@+id/space"
-        tools:text="@tools:sample/lorem/random"/>
+        tools:text="@tools:sample/lorem/random" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvDestinationSubTitle"
         style="@style/MyTextStylePrimaryMicro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:gravity="start|center_vertical"
         android:maxLines="1"
@@ -125,7 +123,7 @@
         app:layout_constraintStart_toEndOf="@+id/viewDotOrange"
         app:layout_constraintTop_toBottomOf="@+id/tvDestinationTitle"
         tools:text="@tools:sample/lorem/random"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvAccept"
@@ -133,21 +131,14 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/rectangle_shape_fill_blue"
+        android:background="@drawable/rectangle_shape_fill_orange"
         android:gravity="center"
         android:padding="0dp"
-        android:text="@string/accept_source"
+        android:text="@string/accept_destination"
         android:textColor="@color/md_white_1000"
         android:textSize="@dimen/text_size_Normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDestinationSubTitle"/>
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="tvDestinationTitle,space,tvDestinationSubTitle,viewDotOrange,view"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvDestinationSubTitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

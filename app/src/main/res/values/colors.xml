@@ -17,7 +17,7 @@
     <color name="primaryTextWhite">#F5F5F5</color>
     <color name="secondaryTextWhite">#d1d1d1</color>
 
-    <color name="divider">#d1d1d1</color>
+    <color name="divider">#4D585858</color>
 
     <color name="toast_success">#5cb85c</color>
     <color name="toast_info">#337ab7</color>

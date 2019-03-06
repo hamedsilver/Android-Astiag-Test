@@ -25,7 +25,7 @@ class TripDataFragmentViewModel : ViewModel(), DIComponent.Injectable {
         navEvents.onNext(NavigationEvent(NavigationEvent.NavEvent.OPEN_DRAWER))
     }
 
-    fun getCurrentLocationData(loc: LatLng): Single<LocationModel?> =
+    fun getCurrentLocationData(loc: LatLng): Single<LocationModel> =
             api.getCurrentLocationData("jsonv2", loc.latitude, loc.longitude)
 
 }

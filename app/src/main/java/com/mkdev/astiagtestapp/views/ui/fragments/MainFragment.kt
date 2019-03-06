@@ -14,10 +14,10 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.view.View
-import androidx.annotation.DrawableRes
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -31,10 +31,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.snackbar.Snackbar
 import com.mkdev.astiagtestapp.App
 import com.mkdev.astiagtestapp.R
+import com.mkdev.astiagtestapp.models.LocationModel
 import com.mkdev.astiagtestapp.utils.*
 import com.mkdev.astiagtestapp.viewModels.MainFragmentViewModel
 import com.mkdev.astiagtestapp.viewModels.ViewModelFactory
@@ -46,6 +47,7 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Consumer
 import io.reactivex.processors.PublishProcessor
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -54,11 +56,9 @@ import java.util.concurrent.TimeUnit
 
 const val LOCATION_REQ_CODE = 4000
 
-class MainFragment : BaseFragment(), View.OnClickListener,
-                     GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
-                     LocationServiceResult, OnMapReadyCallback {
+class MainFragment : BaseFragment(), View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, LocationServiceResult, OnMapReadyCallback {
 
-    private val TAG_FRAGMENT = "TAG_MAINFRAGMENT"
+    private val TAG_FRAGMENT = "TAG_MAIN_FRAGMENT"
 
     private lateinit var viewModel: MainFragmentViewModel
 
@@ -70,41 +70,43 @@ class MainFragment : BaseFragment(), View.OnClickListener,
 
     private lateinit var mMap: GoogleMap
     private var centerOfMap: LatLng? = null
-    private var myLocation: LatLng? = null
+    private var sourceMarker: Marker? = null
+    private var destMarker: Marker? = null
+
+    private lateinit var sourceFragment: Fragment
+    private lateinit var destFragment: Fragment
 
     companion object {
-        var mainActionsPublisher: PublishProcessor<Pair<ActionType, Any?>> =
-                PublishProcessor.create()
-    }
-
-    override fun onConnected(@Nullable bundle: Bundle?) {
-        Timber.d("Connected")
-    }
-
-    override fun onConnectionSuspended(i: Int) {
-        Timber.d("Suspended")
-    }
-
-    override fun onConnectionFailed(@NonNull connectionResult: ConnectionResult) {
-        Timber.d("Failed")
+        var mainActionsPublisher: PublishProcessor<Pair<ActionType, Any?>> = PublishProcessor.create()
     }
 
     override fun initBeforeView() {
         with(context!!.applicationContext as App) {
-            viewModel = ViewModelProviders.of(this@MainFragment, ViewModelFactory(this))
-                    .get(MainFragmentViewModel::class.java)
+            viewModel = ViewModelProviders.of(this@MainFragment, ViewModelFactory(this)).get(MainFragmentViewModel::class.java)
         }
     }
 
     override fun getContentViewId(): Int = R.layout.fragment_main
 
     override fun initViews(rootView: View) {
-        Single.just(true).delay(500, TimeUnit.MILLISECONDS)
-                .iomain()
-                .subscribe({
-                    requestLocationPermission()
-                    setupUI()
-                }, {}).addTo(viewDestroyCompositeDisposable)
+        Single.just(true).delay(500, TimeUnit.MILLISECONDS).iomain().subscribe(Consumer {
+            requestLocationPermission()
+            setupUI()
+        }).addTo(viewDestroyCompositeDisposable)
+    }
+
+    override fun onClick(view: View) {
+        when (view) {
+            fabNav -> {
+                viewModel.openNavigation()
+            }
+            fabBack -> {
+                backLocation()
+            }
+            fabCurrentLocation -> {
+                requestLocationPermission()
+            }
+        }
     }
 
     private fun setupUI() {
@@ -112,36 +114,30 @@ class MainFragment : BaseFragment(), View.OnClickListener,
         fabBack.setOnClickListener(this)
         fabCurrentLocation.setOnClickListener(this)
 
-        childFragmentManager.beginTransaction()
-                .replace(R.id.frameTripData, TripDataFragment.newInstance(), TAG_FRAGMENT)
-                .commit()
+        sourceFragment = TripDataSourceFragment.newInstance()
+        addFragment(sourceFragment)
 
-        GlideApp.with(context!!)
-                .load(R.drawable.img_user)
-                .rounded(dpToPx(25))
-                .into(imgAvatar)
+        GlideApp.with(context!!).load(R.drawable.img_user).rounded(dpToPx(25)).into(imgAvatar)
 
-        mainActionsPublisher
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    when (it.first) {
-                        ActionType.ADD_SOURCE_MARKER -> {
-                            addMapMarker(it.second as LatLng,
-                                    ContextCompat.getDrawable(context!!, R.drawable.img_origin)!!,
-                                    R.drawable.img_dest)
-                        }
-                    }
-                }.addTo(viewDestroyCompositeDisposable)
-    }
+        mainActionsPublisher.observeOn(AndroidSchedulers.mainThread()).subscribe {
+            when (it.first) {
+                ActionType.ACCEPT_SOURCE -> {
+                    destFragment = TripDataDestFragment.newInstance(it.second as LocationModel)
+                    removeFragment(sourceFragment)
+                    addFragment(destFragment)
 
-    private fun addMapMarker(loc: LatLng, origin: Drawable, @DrawableRes dest: Int) {
-        val firstPos = mMap.addMarker(MarkerOptions()
-                .position(loc)
-                .icon(BitmapDescriptorFactory
-                        .fromBitmap(convertToBitmap(origin, dpToPx(45), dpToPx(70)))))
+                    sourceMarker = addMapMarker(centerOfMap!!, ContextCompat.getDrawable(context!!, R.drawable.img_origin)!!)
+                    imgMarker.setImageResource(R.drawable.img_dest)
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(loc.latitude - 0.0005, loc.longitude - 0.0005), 16f))
-        imgMarker.setImageResource(dest)
+                    fabBack.visible()
+                }
+
+                ActionType.ACCEPT_DESTINATION -> {
+                    destMarker = addMapMarker(centerOfMap!!, ContextCompat.getDrawable(context!!, R.drawable.img_dest)!!)
+                    imgMarker.gone()
+                }
+            }
+        }.addTo(viewDestroyCompositeDisposable)
     }
 
     private fun convertToBitmap(drawable: Drawable, widthPixels: Int, heightPixels: Int): Bitmap {
@@ -153,14 +149,10 @@ class MainFragment : BaseFragment(), View.OnClickListener,
     }
 
     private fun requestLocationPermission() {
-        (activity as MainActivity).requestPermission(arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-        ), object : PermissionCallback {
+        (activity as MainActivity).requestPermission(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), object : PermissionCallback {
 
             override fun onGranted(permissions: Array<String>) {
-                if (permissions.contains(Manifest.permission.ACCESS_FINE_LOCATION) &&
-                        permissions.contains(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                if (permissions.contains(Manifest.permission.ACCESS_FINE_LOCATION) && permissions.contains(Manifest.permission.ACCESS_COARSE_LOCATION)) {
                     enableGPSAutomatically()
                 }
             }
@@ -170,11 +162,9 @@ class MainFragment : BaseFragment(), View.OnClickListener,
             }
 
             override fun onShowRationale(permissions: Array<String>) {
-                if (permissions.contains(Manifest.permission.ACCESS_FINE_LOCATION) &&
-                        permissions.contains(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                if (permissions.contains(Manifest.permission.ACCESS_FINE_LOCATION) && permissions.contains(Manifest.permission.ACCESS_COARSE_LOCATION)) {
 
-                    ConfirmDialog(context!!, getString(R.string.permission_request),
-                            getString(R.string.location_permission_rationale), {
+                    ConfirmDialog(context!!, getString(R.string.permission_request), getString(R.string.location_permission_rationale), {
                         requestLocationPermission()
                     }).show()
                 }
@@ -185,21 +175,17 @@ class MainFragment : BaseFragment(), View.OnClickListener,
     private fun enableGPSAutomatically() {
         var googleApiClient: GoogleApiClient? = null
         if (googleApiClient == null) {
-            googleApiClient = GoogleApiClient.Builder(context!!)
-                    .addApi(LocationServices.API).addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this).build()
+            googleApiClient = GoogleApiClient.Builder(context!!).addApi(LocationServices.API).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build()
             googleApiClient!!.connect()
             val locationRequest = LocationRequest.create()
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             locationRequest.interval = 30 * 1000
             locationRequest.fastestInterval = 5 * 1000
-            val builder = LocationSettingsRequest.Builder()
-                    .addLocationRequest(locationRequest)
+            val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
 
             builder.setAlwaysShow(true)
 
-            val result = LocationServices.SettingsApi
-                    .checkLocationSettings(googleApiClient, builder.build())
+            val result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build())
             result.setResultCallback { result ->
                 val status = result.status
                 when (status.statusCode) {
@@ -214,12 +200,7 @@ class MainFragment : BaseFragment(), View.OnClickListener,
                         }
 
                     }
-                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE ->
-                        CustomToast.makeText(
-                                context!!,
-                                "Setting change not allowed",
-                                CustomToast.WARNING
-                        )
+                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> CustomToast.makeText(context!!, "Setting change not allowed", CustomToast.WARNING)
                 }
             }
         }
@@ -232,8 +213,7 @@ class MainFragment : BaseFragment(), View.OnClickListener,
     }
 
     private fun setupMap() {
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map)
-                as SupportMapFragment
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
 
         mapFragment.getMapAsync(this@MainFragment)
     }
@@ -257,7 +237,8 @@ class MainFragment : BaseFragment(), View.OnClickListener,
         val location = locationManager?.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER)
         if (location != null) {
             updateLocation(location)
-        } else {
+        }
+        else {
             updateListener = object : LocationListener {
                 override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
                 }
@@ -277,47 +258,51 @@ class MainFragment : BaseFragment(), View.OnClickListener,
     }
 
     private fun updateLocation(loc: Location) {
-        myLocation = LatLng(loc.latitude, loc.longitude)
         centerOfMap = LatLng(loc.latitude, loc.longitude)
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16f))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(centerOfMap, 16f))
 
         fabCurrentLocation.isClickable = true
-
 
         Flowable.create<LatLng>({
             mMap.setOnCameraIdleListener {
                 it.onNext(mMap.cameraPosition.target)
             }
-        }, BackpressureStrategy.DROP)
-                .debounce(1, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    centerOfMap = it
-                    TripDataFragment.tripDataActionsPublisher.onNext(Pair(ActionType.SHOW_SOURCE, centerOfMap))
-                }.addTo(viewDestroyCompositeDisposable)
+        }, BackpressureStrategy.DROP).debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe {
+            centerOfMap = it
+            if (sourceMarker == null) TripDataSourceFragment.tripDataActionsPublisher.onNext(Pair(ActionType.SHOW_LOCATION_DATA, it))
+            else if (destMarker == null) TripDataDestFragment.tripDataActionsPublisher.onNext(Pair(ActionType.SHOW_LOCATION_DATA, it))
+        }.addTo(viewDestroyCompositeDisposable)
     }
 
-    override fun onClick(view: View) {
-        when (view) {
-            fabNav -> {
-                viewModel.openNavigation()
-            }
-            fabBack -> {
-                Snackbar.make(view, getString(R.string.main_snack_bar), Snackbar.LENGTH_LONG)
-                        .apply {
-                            setAction(getString(R.string.main_snack_bar_action)) { this.dismiss() }
-                            setActionTextColor(
-                                    ContextCompat.getColor(
-                                            context,
-                                            R.color.colorSnackBarActionText
-                                    )
-                            )
-                        }.show()
-            }
-            fabCurrentLocation -> {
-                requestLocationPermission()
-            }
-        }
+    private fun backLocation() {
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sourceMarker!!.position, 16f))
+
+        destMarker?.remove()
+        sourceMarker?.remove()
+        destMarker = null
+        sourceMarker = null
+
+        imgMarker.setImageResource(R.drawable.img_origin)
+        imgMarker.visible()
+
+        removeFragment(destFragment)
+        addFragment(sourceFragment)
+
+        fabBack.gone()
+    }
+
+    private fun addFragment(fragment: Fragment) {
+        childFragmentManager.beginTransaction().replace(R.id.frameTripData, fragment, TAG_FRAGMENT).commit()
+    }
+
+    private fun removeFragment(fragment: Fragment) {
+        childFragmentManager.beginTransaction().remove(fragment).commit()
+    }
+
+    private fun addMapMarker(loc: LatLng, origin: Drawable): Marker {
+        val marker = mMap.addMarker(MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromBitmap(convertToBitmap(origin, dpToPx(45), dpToPx(70)))))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(loc.latitude - 0.0005, loc.longitude - 0.0005), 16f))
+        return marker
     }
 
     override fun onDestroy() {
@@ -335,10 +320,19 @@ class MainFragment : BaseFragment(), View.OnClickListener,
     }
 
     enum class ActionType {
-        SHOW_SOURCE,
-        SHOW_DESTINATION,
-        ADD_SOURCE_MARKER,
-        ADD_DESTINATION_MARKER
+        SHOW_LOCATION_DATA, ACCEPT_SOURCE, ACCEPT_DESTINATION
+    }
+
+    override fun onConnected(@Nullable bundle: Bundle?) {
+        Timber.d("Connected")
+    }
+
+    override fun onConnectionSuspended(i: Int) {
+        Timber.d("Suspended")
+    }
+
+    override fun onConnectionFailed(@NonNull connectionResult: ConnectionResult) {
+        Timber.d("Failed")
     }
 }
 

@@ -4,6 +4,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.location.Criteria
 import android.location.Location
 import android.location.LocationListener
@@ -11,6 +14,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.view.View
+import androidx.annotation.DrawableRes
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.core.content.ContextCompat
@@ -25,7 +29,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.mkdev.astiagtestapp.App
 import com.mkdev.astiagtestapp.R
@@ -49,8 +55,8 @@ import java.util.concurrent.TimeUnit
 const val LOCATION_REQ_CODE = 4000
 
 class MainFragment : BaseFragment(), View.OnClickListener,
-    GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
-    LocationServiceResult, OnMapReadyCallback {
+                     GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
+                     LocationServiceResult, OnMapReadyCallback {
 
     private val TAG_FRAGMENT = "TAG_MAINFRAGMENT"
 
@@ -86,7 +92,7 @@ class MainFragment : BaseFragment(), View.OnClickListener,
     override fun initBeforeView() {
         with(context!!.applicationContext as App) {
             viewModel = ViewModelProviders.of(this@MainFragment, ViewModelFactory(this))
-                .get(MainFragmentViewModel::class.java)
+                    .get(MainFragmentViewModel::class.java)
         }
     }
 
@@ -94,23 +100,23 @@ class MainFragment : BaseFragment(), View.OnClickListener,
 
     override fun initViews(rootView: View) {
         Single.just(true).delay(500, TimeUnit.MILLISECONDS)
-            .iomain()
-            .subscribe({
-                requestLocationPermission()
-            }, {}).addTo(viewDestroyCompositeDisposable)
+                .iomain()
+                .subscribe({
+                    requestLocationPermission()
+                }, {}).addTo(viewDestroyCompositeDisposable)
 
         setupUI()
     }
 
     private fun setupUI() {
         childFragmentManager.beginTransaction()
-            .replace(R.id.frameTripData, TripDataFragment.newInstance(), TAG_FRAGMENT)
-            .commit()
+                .replace(R.id.frameTripData, TripDataFragment.newInstance(), TAG_FRAGMENT)
+                .commit()
 
         GlideApp.with(context!!)
-            .load(R.drawable.img_user)
-            .rounded(dpToPx(25))
-            .into(imgAvatar)
+                .load(R.drawable.img_user)
+                .rounded(dpToPx(25))
+                .into(imgAvatar)
 
         fabNav.setOnClickListener(this)
         fabBack.setOnClickListener(this)
@@ -120,20 +126,42 @@ class MainFragment : BaseFragment(), View.OnClickListener,
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     when (it.first) {
-
+                        ActionType.ADD_SOURCE_MARKER -> {
+                            addMapMarker(it.second as LatLng,
+                                    ContextCompat.getDrawable(context!!, R.drawable.img_origin)!!,
+                                    R.drawable.img_dest)
+                        }
                     }
                 }.addTo(viewDestroyCompositeDisposable)
     }
 
+    private fun addMapMarker(loc: LatLng, origin: Drawable, @DrawableRes dest: Int) {
+        val firstPos = mMap.addMarker(MarkerOptions()
+                .position(loc)
+                .icon(BitmapDescriptorFactory
+                        .fromBitmap(convertToBitmap(origin, dpToPx(45), dpToPx(70)))))
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(loc.latitude - 0.0005, loc.longitude - 0.0005), 16f))
+        imgMarker.setImageResource(dest)
+    }
+
+    private fun convertToBitmap(drawable: Drawable, widthPixels: Int, heightPixels: Int): Bitmap {
+        val mutableBitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(mutableBitmap)
+        drawable.setBounds(0, 0, widthPixels, heightPixels)
+        drawable.draw(canvas)
+        return mutableBitmap
+    }
+
     private fun requestLocationPermission() {
         (activity as MainActivity).requestPermission(arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
         ), object : PermissionCallback {
 
             override fun onGranted(permissions: Array<String>) {
                 if (permissions.contains(Manifest.permission.ACCESS_FINE_LOCATION) &&
-                    permissions.contains(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                        permissions.contains(Manifest.permission.ACCESS_COARSE_LOCATION)) {
                     enableGPSAutomatically()
                 }
             }
@@ -144,12 +172,12 @@ class MainFragment : BaseFragment(), View.OnClickListener,
 
             override fun onShowRationale(permissions: Array<String>) {
                 if (permissions.contains(Manifest.permission.ACCESS_FINE_LOCATION) &&
-                    permissions.contains(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                        permissions.contains(Manifest.permission.ACCESS_COARSE_LOCATION)) {
 
                     ConfirmDialog(context!!, getString(R.string.permission_request),
-                        getString(R.string.location_permission_rationale), {
-                            requestLocationPermission()
-                        }).show()
+                            getString(R.string.location_permission_rationale), {
+                        requestLocationPermission()
+                    }).show()
                 }
             }
         })
@@ -159,20 +187,20 @@ class MainFragment : BaseFragment(), View.OnClickListener,
         var googleApiClient: GoogleApiClient? = null
         if (googleApiClient == null) {
             googleApiClient = GoogleApiClient.Builder(context!!)
-                .addApi(LocationServices.API).addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this).build()
+                    .addApi(LocationServices.API).addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this).build()
             googleApiClient!!.connect()
             val locationRequest = LocationRequest.create()
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             locationRequest.interval = 30 * 1000
             locationRequest.fastestInterval = 5 * 1000
             val builder = LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest)
+                    .addLocationRequest(locationRequest)
 
             builder.setAlwaysShow(true)
 
             val result = LocationServices.SettingsApi
-                .checkLocationSettings(googleApiClient, builder.build())
+                    .checkLocationSettings(googleApiClient, builder.build())
             result.setResultCallback { result ->
                 val status = result.status
                 when (status.statusCode) {
@@ -189,9 +217,9 @@ class MainFragment : BaseFragment(), View.OnClickListener,
                     }
                     LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE ->
                         CustomToast.makeText(
-                            context!!,
-                            "Setting change not allowed",
-                            CustomToast.WARNING
+                                context!!,
+                                "Setting change not allowed",
+                                CustomToast.WARNING
                         )
                 }
             }
@@ -254,17 +282,20 @@ class MainFragment : BaseFragment(), View.OnClickListener,
         centerOfMap = LatLng(loc.latitude, loc.longitude)
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16f))
 
+        fabCurrentLocation.isClickable = true
+
+
         Flowable.create<LatLng>({
             mMap.setOnCameraIdleListener {
                 it.onNext(mMap.cameraPosition.target)
             }
         }, BackpressureStrategy.DROP)
-            .debounce(1, TimeUnit.SECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                centerOfMap = it
-                TripDataFragment.tripDataActionsPublisher.onNext(Pair(ActionType.SHOW_SOURCE, centerOfMap))
-            }.addTo(viewDestroyCompositeDisposable)
+                .debounce(1, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    centerOfMap = it
+                    TripDataFragment.tripDataActionsPublisher.onNext(Pair(ActionType.SHOW_SOURCE, centerOfMap))
+                }.addTo(viewDestroyCompositeDisposable)
     }
 
     override fun onClick(view: View) {
@@ -274,15 +305,18 @@ class MainFragment : BaseFragment(), View.OnClickListener,
             }
             fabBack -> {
                 Snackbar.make(view, getString(R.string.main_snack_bar), Snackbar.LENGTH_LONG)
-                    .apply {
-                        setAction(getString(R.string.main_snack_bar_action)) { this.dismiss() }
-                        setActionTextColor(
-                            ContextCompat.getColor(
-                                context,
-                                R.color.colorSnackBarActionText
+                        .apply {
+                            setAction(getString(R.string.main_snack_bar_action)) { this.dismiss() }
+                            setActionTextColor(
+                                    ContextCompat.getColor(
+                                            context,
+                                            R.color.colorSnackBarActionText
+                                    )
                             )
-                        )
-                    }.show()
+                        }.show()
+            }
+            fabCurrentLocation -> {
+                requestLocationPermission()
             }
         }
     }
@@ -303,7 +337,9 @@ class MainFragment : BaseFragment(), View.OnClickListener,
 
     enum class ActionType {
         SHOW_SOURCE,
-        SHOW_DESTINATION
+        SHOW_DESTINATION,
+        ADD_SOURCE_MARKER,
+        ADD_DESTINATION_MARKER
     }
 }
 

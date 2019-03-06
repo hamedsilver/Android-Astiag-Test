@@ -1,29 +1,30 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:colorBackground">
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   android:background="?android:colorBackground">
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <ImageView
+        android:id="@+id/imgMarker"
         android:layout_width="45dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="60dp"
         android:adjustViewBounds="true"
         android:src="@drawable/img_origin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
         android:id="@+id/imgAvatar"
@@ -36,7 +37,7 @@
         android:padding="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        tools:src="@tools:sample/avatars"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabNav"
@@ -46,17 +47,18 @@
         app:fabSize="mini"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_sort_blue_grey_900_24dp" />
+        app:srcCompat="@drawable/ic_sort_blue_grey_900_24dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabCurrentLocation"
         style="@style/MyFabCustomStyle"
         android:layout_margin="@dimen/image_margin"
+        android:clickable="false"
         android:theme="@style/AppTheme.White"
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@+id/frameTripData"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_my_location_blue_grey_900_24dp" />
+        app:srcCompat="@drawable/ic_my_location_blue_grey_900_24dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabBack"
@@ -64,10 +66,12 @@
         android:layout_margin="@dimen/image_margin"
         android:layout_marginEnd="8dp"
         android:theme="@style/AppTheme.White"
+        android:visibility="gone"
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@+id/frameTripData"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_arrow_forward_blue_grey_900_24dp" />
+        app:srcCompat="@drawable/ic_arrow_forward_blue_grey_900_24dp"
+        tools:visibility="visible"/>
 
     <FrameLayout
         android:id="@+id/frameTripData"
@@ -76,6 +80,6 @@
         android:layout_gravity="bottom"
         app:layout_constraintBottom_toBottomOf="@+id/map"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

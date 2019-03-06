@@ -20,7 +20,16 @@ import kotlinx.android.synthetic.main.fragment_trip_data.*
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-class TripDataFragment : BaseFragment() {
+
+class TripDataFragment : BaseFragment(), View.OnClickListener {
+
+    override fun onClick(v: View) {
+        when (v) {
+            tvAccept -> {
+                changeUiToDest()
+            }
+        }
+    }
 
     private val viewDestroyCompositeDisposable = CompositeDisposable()
     private val destroyCompositeDisposable = CompositeDisposable()
@@ -63,6 +72,8 @@ class TripDataFragment : BaseFragment() {
                         }
                     }
                 }.addTo(viewDestroyCompositeDisposable)
+
+        tvAccept.setOnClickListener(this)
     }
 
     private fun getCurrentLocationData() {
@@ -83,6 +94,13 @@ class TripDataFragment : BaseFragment() {
                     Timber.e(it)
                     CustomToast.makeText(context!!, getString(R.string.server_error), CustomToast.ERROR)
                 }).addTo(viewDestroyCompositeDisposable)
+    }
+
+    private fun changeUiToDest() {
+        tvAccept.setBackgroundResource(R.drawable.rectangle_shape_fill_orange)
+        tvAccept.text = getString(R.string.accept_destination)
+        group.visible()
+        MainFragment.mainActionsPublisher.onNext(Pair(MainFragment.ActionType.ADD_SOURCE_MARKER, centerOfMap))
     }
 
     override fun onDestroy() {
